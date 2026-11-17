@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPANDAI - Sistem Penilaian dan Asesmen Digital</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --navy-dark: #0f172a;
+      --navy-primary: #1e3a8a;
+      --accent-blue: #3b82f6;
+      --bg-color: #f8fafc;
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --border-color: #cbd5e1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); }
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    #login-screen { padding: 1.5rem; background: linear-gradient(135deg, var(--navy-dark), var(--navy-primary)); }
+    .login-card { background: white; width: 100%; max-width: 420px; padding: 2rem; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
+    .logo-box { width: 64px; height: 64px; background: var(--accent-blue); color: white; font-size: 2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; border-radius: 16px; margin: 0 auto 1rem; }
+    h1 { text-align: center; color: var(--navy-dark); font-size: 1.75rem; margin-bottom: 0.25rem; }
+    p.subtitle { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .tab-container { display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 1.5rem; gap: 4px; }
+    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; color: var(--text-muted); border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { background: white; color: var(--navy-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .login-form { display: none; }
+    .login-form.active { display: block; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--navy-dark); }
+    input, select { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; outline: none; transition: 0.2s; }
+    input:focus, select:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .btn-submit { width: 100%; padding: 12px; background: var(--accent-blue); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 0.5rem; }
+    .error-msg { color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 1rem; font-weight: 500; }
+    
+    /* Dashboard Style */
+    #dashboard-screen { justify-content: flex-start; background: var(--bg-color); }
+    .navbar { width: 100%; background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+    .main-container { width: 100%; max-width: 1000px; padding: 2rem; margin: 0 auto; }
+  </style>
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen" class="screen active" style="background:var(--navy-dark); color:white;">
+    <h2>Memuat SIPANDAI...</h2>
+  </div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="screen">
+    <div class="login-card">
+      <div class="logo-box">S</div>
+      <h1>SIPANDAI</h1>
+      <p class="subtitle">Sistem Penilaian dan Asesmen Digital</p>
+      
+      <div class="tab-container">
+        <button class="tab-btn active" data-target="form-siswa">Siswa</button>
+        <button class="tab-btn tab-guru" data-target="form-guru">Guru</button>
+        <button class="tab-btn tab-owner" data-target="form-owner">Owner</button>
+      </div>
+
+      <!-- FORM SISWA -->
+      <form id="form-siswa" class="login-form active">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="siswa-nama" placeholder="Contoh: Dewa" required>
+        </div>
+        <div class="form-group">
+          <label>Kelas</label>
+          <select id="siswa-kelas">
+            <option value="VA">Kelas VA</option>
+            <option value="VB" selected>Kelas VB</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-submit">Masuk</button>
+      </form>
+
+      <!-- FORM GURU -->
+      <form id="form-guru" class="login-form">
+        <div class="form-group">
+          <label>Nama Guru</label>
+          <input type="text" id="guru-nama" placeholder="Nama Pengajar" required>
+        </div>
+        <div class="form-group">
+          <label>Kode Akses Guru</label>
+          <input type="password" id="guru-kode" placeholder="Masukkan Kode" required>
+        </div>
+        <button type="submit" class="btn-submit">Masuk Guru</button>
+      </form>
+
+      <!-- FORM OWNER -->
+      <form id="form-owner" class="login-form">
+        <div class="form-group">
+          <label>Nama Owner</label>
+          <input type="text" id="owner-nama" placeholder="Nama Owner" required>
+        </div>
+        <div class="form-group">
+          <label>Kode Akses Owner</label>
+          <input type="password" id="owner-kode" placeholder="Masukkan Kode" required>
+        </div>
+        <button type="submit" class="btn-submit">Masuk Owner</button>
+      </form>
+
+      <div id="login-error" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SCREEN -->
+  <div id="dashboard-screen" class="screen">
+    <div class="navbar">
+      <h3 id="display-name" style="color:var(--navy-dark)">User</h3>
+      <button id="btn-logout" style="padding: 8px 16px; background:#ef4444; color:white; border:none; border-radius:8px; cursor:pointer;">Keluar</button>
+    </div>
+    <div class="main-container">
+      <div id="content-viewport">
+        <div style="background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+          <h2 id="page-title">Dashboard</h2>
+          <p id="display-role-kelas" style="color:var(--text-muted); margin-top:0.5rem;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT GABUNGAN + FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInAnonymously, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Konfigurasi Firebase bawaan lu
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKeyForStaticFrontendBuildFix123",
+      authDomain: "sipandai-app.firebaseapp.com",
+      projectId: "sipandai-app",
+      storageBucket: "sipandai-app.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcde"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let userC = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Hilangkan loading awal
+      document.getElementById('loading-screen').classList.remove('active');
+      document.getElementById('login-screen').classList.add('active');
+
+      // Tab Switcher
+      document.querySelectorAll(".tab-btn").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll(".tab-btn,.login-form").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          document.getElementById(b.dataset.target).classList.add("active");
+          document.getElementById('login-error').innerText = '';
+        };
+      });
+
+      // Login Handlers
+      ["siswa", "guru", "owner"].forEach(r => {
+        const f = document.getElementById(`form-${r}`);
+        if(f) f.onsubmit = async (e) => {
+          e.preventDefault();
+          const nama = document.getElementById(`${r}-nama`).value.trim();
+          const kode = r !== 'siswa' ? document.getElementById(`${r}-kode`).value.trim() : '';
+          
+          if(r === 'guru' && kode !== '1910') return err('Kode Guru salah! Gunakan: 1910');
+          if(r === 'owner' && kode !== '0607') return err('Kode Owner salah! Gunakan: 0607');
+          
+          try {
+            document.getElementById('login-error').innerText = 'Menghubungkan ke sistem...';
+            await signInAnonymously(auth);
+            userC = { 
+              uid: `user_${r}_${nama.toLowerCase().replace(/[^a-z0-9]/g,'')}`, 
+              nama, 
+              role: r, 
+              kelas: r === 'siswa' ? document.getElementById('siswa-kelas').value : '-' 
+            };
+            await setDoc(doc(db, 'users', userC.uid), userC, {merge:true});
+            showDash();
+          } catch(error) {
+            err('Gagal masuk database!');
+          }
+        };
+      });
+    });
+
+    function err(t) { document.getElementById('login-error').innerText = t; }
+
+    function showDash() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('dashboard-screen').classList.add('active');
+      document.getElementById('display-name').innerText = userC.nama;
+      document.getElementById('page-title').innerText = `Dashboard ${userC.role.toUpperCase()}`;
+      document.getElementById('display-role-kelas').innerText = userC.role === 'siswa' ? `Siswa - Kelas ${userC.kelas}` : 'Akses Khusus Pengelola';
+      
+      document.getElementById('btn-logout').onclick = async () => {
+        await signOut(auth);
+        location.reload();
+      };
+    }
+  </script>
+</body>
+</html>
+
